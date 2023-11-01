@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Success</title>
+
+
+</head>
+<body>
+<p>aaaa恭喜你秒杀成功</p>
+<div id="message"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    var socket = new SockJS('/websocket');
+    var stompClient = Stomp.over(socket);
+
+
+    stompClient.connect({}, function (frame) {
+        console.log('WebSocket 连接已建立');
+        stompClient.subscribe('/topic/messages', function (message) {
+            var jsonMessage = JSON.parse(message.body); // 将message转换为JSON对象
+
+
+            console.log(jsonMessage); // 打印JSON对象
+            console.log("json 对象应该在上面")
+            document.getElementById("message").innerHTML = JSON.stringify(jsonMessage);
+            location.reload();
+        });
+    });
+
+    socket.onerror = function (error) {
+        console.error('WebSocket 连接发生错误:', error);
+        // 在这里可以处理连接错误
+    };
+
+
+</script>
+</body>
+</html>
